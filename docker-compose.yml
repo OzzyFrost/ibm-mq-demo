@@ -1,0 +1,35 @@
+version: "3.6"
+networks:
+  spring:
+services:
+  spring1: &app
+    hostname: spring1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080"
+    networks:
+      - spring
+  spring2:
+    << : *app
+    hostname: spring2
+  spring3:
+    << : *app
+    hostname: spring3
+  ibmmq:
+    image: ibmcom/mq
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=ozzy
+      - MQ_APP_PASSWORD=passw0rd
+    volumes:
+      - type: bind
+        source: ./static
+        target: /mnt/mqm
+    hostname: mq
+    networks:
+      - spring

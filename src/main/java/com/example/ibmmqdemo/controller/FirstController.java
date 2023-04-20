@@ -2,16 +2,26 @@ package com.example.ibmmqdemo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
-import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@EnableJms
 public class FirstController {
     @Autowired
     private JmsTemplate jmsTemplate;
+
+    @GetMapping("test")
+    String test(){
+        try{
+            jmsTemplate.convertAndSend("DEV.QUEUE.1", "Hello World!");
+            return "OK";
+        }catch(JmsException ex){
+            ex.printStackTrace();
+            return jmsTemplate.toString()+"\n"+
+                    ex.getMessage();
+        }
+    }
 
     @GetMapping("send")
     String send(){
