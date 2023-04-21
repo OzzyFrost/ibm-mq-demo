@@ -8,15 +8,19 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080"
+      - "8091:8080"
     networks:
       - spring
   spring2:
     << : *app
     hostname: spring2
+    ports:
+      - "8092:8080"
   spring3:
     << : *app
     hostname: spring3
+    ports:
+      - "8093:8080"
   ibmmq:
     image: ibmcom/mq
     ports:
@@ -30,6 +34,5 @@ services:
       - type: bind
         source: ./static
         target: /mnt/mqm
-    hostname: mq
     networks:
       - spring
